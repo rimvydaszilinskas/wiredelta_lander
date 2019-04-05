@@ -1,5 +1,4 @@
-var date = new Date();
-
+// add data to variable for easy access
 var data = [
     {   
         "id": 1,
@@ -224,6 +223,7 @@ const inspiration = [
      }
 ]
 
+// set months array for easy parsing
 const months = [
     'January', 
     'February', 
@@ -239,6 +239,7 @@ const months = [
     'December'
 ];
 
+// weekdays start on sunday
 const weekdays = [
     'Sunday',
     'Monday',
@@ -249,25 +250,44 @@ const weekdays = [
     'Saturday'
 ];
 
+// set global variables
+var date = new Date();
+var year = date.getFullYear();
+var month = months[date.getMonth()];
+var day = date.getDate();
+var weekDay = weekdays[date.getDay()];
+var hour = date.getHours();
+var minutes = date.getMinutes();
+var activeDay = weekDay;
+
+// Function declarations
+
+// event handler for select color method
 function changeColor(e) {
     document.body.style.backgroundColor = e.value;
     document.getElementById('main').style.backgroundColor = e.value;
 }
 
-function changeName(e) {
-    document.getElementById('name').innerHTML = e.value.length !== 0 ? e.value : 'User';
+// event handler for name change method, has to pass parameter name
+function changeName(name) {
+    document.getElementById('name').innerHTML = name.value.length !== 0 ? name.value : 'User';
 }
 
+// displays average temperature and weather condition in Copenhagen
 function getForecast() {
+    // define simple url with predefined location
     var URL = 'https://api.aerisapi.com/forecasts/Copenhagen,DK?client_id=xHdB08opZ2q5M41k073Ww&client_secret=oANwcdZtXeOgYjXTgb6XuqvJTyHpVYB5g1eQVU4X';
 
     fetch(URL, {
         method: "GET"
     }).then(response => {
+        // try parsing json from the request
         response.json().then(resp => {
+            // if successfull choose the first period and first part of response
             var weather = resp.response[0].periods[0];
             var temp = weather.avgTempC;
             var type = weather.weather.toLowerCase();
+            // set the element to weather string
             document.getElementById('weather').innerHTML = `Today in Copenhagen is ${type} and the tempareture is approximately ${temp} degrees of celsius or ${273 + temp}K`
         }); 
     }).catch(err => {
@@ -275,16 +295,19 @@ function getForecast() {
     })
 }
 
+// add tasks from the input field #new-task
 function addTask() {
     var task = document.getElementById('new-task').value;
+    var time = document.getElementById('new-task-time').value;
 
-    if(task.length === 0)
+    if(task.length === 0 || time.length === 0)
         return;
     
     var obj = {
+        // gen id
         id: Math.floor(Math.random() * 1000),
         day: activeDay,
-        time: "17:00",
+        time: time,
         description: task
     };
 
@@ -292,16 +315,15 @@ function addTask() {
     addTaskToList(obj);
 }
 
+// updates the list displayed, does not change any of the global variables
 function updateList(day = activeDay) {
     var filtered = data.filter(file => {
-        return file.day === day;
-    });
-
-    filtered.forEach(file => {
-        addTaskToList(file);
+        if(file.day === day)
+            addTaskToList(file);
     });
 }
 
+// creates new element in list container
 function addTaskToList(task) {
     var node = document.createElement('li');
     var textNode = document.createTextNode(`${task.description} | ${task.time}`);
@@ -325,13 +347,16 @@ function addTaskToList(task) {
     button.setAttribute('class', 'delete-btn');
     button.setAttribute('class', 'btn');
 
+    // attach disabled class if the time has already passed
     if(time > taskTime && weekDay === task.day)
         node.setAttribute('class', 'disabled');
+
     node.appendChild(textNode);
     node.appendChild(button);
     document.getElementById('task-list').appendChild(node);
 }
 
+// event handler for changing tabs today's/tomorrow's tasks
 function displayTasks(e, day) {
     Array.from(document.getElementsByClassName('tab-link')).forEach(el => {
         el.classList.remove('active');
@@ -344,15 +369,17 @@ function displayTasks(e, day) {
     updateList(activeDay);
 }
 
+// event handler for deleting tasks, updates the list and view
 function deleteTask(id){
     data = data.filter(item => {
         return id !== item.id;
     });
 
-    document.getElementById('taskList').innerHTML = '';
+    document.getElementById('task-list').innerHTML = '';
     updateList()    
 }
 
+// sets appropriate greeting depending on time
 function setGreeting(hour) {
     var greeting;
     if(hour >= 4 && hour < 10) {
@@ -370,6 +397,7 @@ function setGreeting(hour) {
     document.getElementById('greeting').innerHTML = greeting;
 }
 
+// initialize quote and start the timer
 function initQuote() {
     displayQuote();
     setTimeout(setQuote, 5000);
@@ -380,7 +408,7 @@ function setQuote() {
         .then(res => {
             displayQuote();
             fadeIn(document.getElementById('quote-container'));
-        })
+        });
 }
 
 function displayQuote() {
@@ -411,6 +439,7 @@ var formatTime = (hour, minute) => {
     return `${hr}:${min} ${prefix}`;
 }
 
+// target has to be selected element already 
 function fadeOut(target) {
     return new Promise(resolve => {
         var fade = setInterval(() => {
@@ -428,10 +457,12 @@ function fadeOut(target) {
     });
 }
 
+// target has to be selected element already
 function fadeIn(target) {
     target.style.opacity = 1;
 }
 
+// time interval for updating the time element
 var timeInterval = setInterval(() => {
     var d = new Date();
 
@@ -441,17 +472,7 @@ var timeInterval = setInterval(() => {
     document.getElementById('time').innerHTML = formatTime(hour, minutes);
 }, 2000);
 
-var quoteInterval = setInterval(() => {
-    setQuote();
-}, 10000);
-
-var year = date.getFullYear();
-var month = months[date.getMonth()];
-var day = date.getDate();
-var weekDay = weekdays[date.getDay()];
-var hour = date.getHours();
-var minutes = date.getMinutes();
-var activeDay = weekDay;
+// startup code down
 
 document.getElementById('date').innerHTML = `${weekDay} ${getDay(day)} ${month} ${year}`;
 document.getElementById('time').innerHTML = formatTime(hour, minutes);
@@ -460,3 +481,6 @@ getForecast();
 updateList();
 setGreeting(hour);
 initQuote();
+
+// time interval for switching quotes
+var quoteInterval = setInterval(setQuote(), 10000);
