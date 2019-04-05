@@ -317,7 +317,7 @@ function addTask() {
 
 // updates the list displayed, does not change any of the global variables
 function updateList(day = activeDay) {
-    var filtered = data.filter(file => {
+    data.forEach(file => {
         if(file.day === day)
             addTaskToList(file);
     });
@@ -472,6 +472,11 @@ var timeInterval = setInterval(() => {
     document.getElementById('time').innerHTML = formatTime(hour, minutes);
 }, 2000);
 
+// update list every 2 minutes
+var updateTaskInterval = setInterval(() => {
+    document.getElementById('task-list').innerHTML = '';
+    updateList();
+}, 120000);
 // startup code down
 
 document.getElementById('date').innerHTML = `${weekDay} ${getDay(day)} ${month} ${year}`;
