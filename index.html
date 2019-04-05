@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Today</title>
+    <link rel="stylesheet" type="text/css" href="./style.css">
+</head>
+<body>
+    <div class="container" id="main">
+        <div class="top-row">
+            <h1><span id="greeting"></span>, <span id="name">User</span>!</h1>
+            <h3 id="date"></h3>
+            <h3 id="time"></h3>
+            <div id="quote-container">
+                <p id="quote-holder">"<span id="quote">The only people who never fail are those who never try.</span>"</p>
+                <p id="quote-author">-<span id="quote-author">Ilka Chase</span></p>
+            </div>
+        </div>
+        
+        
+        <p id="weather"></p>
+        <div id="tasks">
+            <div class="tab">
+                <button class="tab-link active" onclick="displayTasks(this, 'today')">
+                    Today
+                </button>
+                <button class="tab-link" onclick="displayTasks(this)">
+                    Tomorrow
+                </button>
+            </div>
+            <div class="tab-content">
+                <ul id="task-list"></ul>
+                <input type="text" id="new-task" class="input">
+                <button class="btn" onclick="addTask()">Submit</button>
+            </div>
+        </div>
+        <div>
+            <p>My name is: <input class="input" type="text" id="name" oninput="changeName(this)" placeholder="User"></p>
+        </div>
+        <div>
+            <p>
+                I would like the background color to be: 
+                <select class="input" onchange="changeColor(this)">
+                    <option value="white"></option>
+                    <option value="blue">Blue</option>
+                    <option value="red">Red</option>
+                    <option value="green">Green</option>
+                </select>
+            </p>
+        </div>
+        
+    </div>
+
+    <script src="./script.js"></script>
+</body>
+</html>
