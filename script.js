@@ -363,8 +363,9 @@ function displayTasks(e, day) {
     });
 
     e.classList.add('active');
+
     document.getElementById('task-list').innerHTML = '';
-    activeDay = day === 'today' ? weekDay : weekdays[date.getDay() + 1];
+    activeDay = day === 'today' ? weekDay : weekdays[date.getDay() + 1 > 6 ? 0 : date.getDay() + 1];
 
     updateList(activeDay);
 }
@@ -470,15 +471,12 @@ var timeInterval = setInterval(() => {
     var minutes = d.getMinutes();
 
     document.getElementById('time').innerHTML = formatTime(hour, minutes);
-}, 2000);
 
-// update list every 2 minutes
-var updateTaskInterval = setInterval(() => {
     document.getElementById('task-list').innerHTML = '';
     updateList();
-}, 120000);
-// startup code down
+}, 2000);
 
+// startup code down
 document.getElementById('date').innerHTML = `${weekDay} ${getDay(day)} ${month} ${year}`;
 document.getElementById('time').innerHTML = formatTime(hour, minutes);
 
